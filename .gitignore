@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+*.egg-info/
+
+# Data — never commit raw dumps, extracted records, or snapshots
+**/data/dumps/
+**/data/extracted_current/
+**/data/snapshot_*/
+**/data/smoke/
+**/data/conversations/
+**/data/stats/
+**/data/*.jsonl
+**/data/*.ndjson
+
+# Model artifacts (multi-MB to multi-GB binaries)
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+*.onnx
+
+# Run outputs / generated artifacts
+**/outputs/
+**/output/
+**/results/
+**/steering_vector_evals/
+**/plots/output/
+**/plots/outputs/
+**/prompted_personalization/outputs/
+**/prompted_professor_llm/outputs/
+
+# Logs
+*.log
+/tmp/*.log
+
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Notebooks (often heavy outputs; uncomment to include)
+# *.ipynb_checkpoints/
+
+# Secrets / env
+.env
+.env.*
+*.pem
+*credentials*
