@@ -52,3 +52,6 @@ venv/
 .env.*
 *.pem
 *credentials*
+
+# By-post merged pairs (6.5G — belongs on HF, not git)
+**/data/pairs_by_post/

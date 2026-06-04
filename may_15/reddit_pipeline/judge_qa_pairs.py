@@ -51,7 +51,7 @@ MAX_TOKENS = 500
 RETRY_ATTEMPTS = 5
 TRUNCATE_CHARS = 6000
 FSYNC_EVERY = 100
-PUSH_EVERY = 1000
+PUSH_EVERY = 5000
 
 HF_REPO_ID = "dipikakhullar/personalization-reddit"
 HF_REPO_TYPE = "dataset"

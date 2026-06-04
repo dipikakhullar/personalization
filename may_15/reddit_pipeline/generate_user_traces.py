@@ -39,6 +39,49 @@ def truncate(s: str, n: int) -> str:
     return s if len(s) <= n else s[:n].rsplit(" ", 1)[0] + "…"
 
 
+def _pair_key(p: dict) -> tuple[str, str]:
+    md = p.get("metadata") or {}
+    return md.get("post_id", ""), md.get("answer_comment_id", "")
+
+
+def _qa_survives(p: dict, judge_map: dict[tuple[str, str], bool]) -> bool | None:
+    """True if the preferred answer resolves the query (LLM judge).
+
+    Returns None when no judgement is available for this pair."""
+    j = p.get("is_qa_pair")
+    if j is not None:
+        b = j.get("question_answer_pair")
+        return None if b is None else bool(b)
+    key = _pair_key(p)
+    if key in judge_map:
+        return judge_map[key]
+    return None
+
+
+def load_judge_map(pairs_path: Path, judge_dir: Path | None) -> dict[tuple[str, str], bool]:
+    sub = pairs_path.stem.removeprefix("sub-")
+    if judge_dir is None:
+        # …/data/extracted_current/pairs/sub-X.jsonl → …/data/llm_judge/
+        judge_dir = pairs_path.parent.parent.parent / "llm_judge"
+    sidecar = judge_dir / f"sub-{sub}.jsonl"
+    out: dict[tuple[str, str], bool] = {}
+    if not sidecar.is_file():
+        return out
+    for line in sidecar.read_text().splitlines():
+        if not line.strip():
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        key = (rec.get("post_id"), rec.get("answer_comment_id"))
+        j = rec.get("is_qa_pair") or {}
+        b = j.get("question_answer_pair")
+        if key[0] and key[1] and b is not None:
+            out[key] = bool(b)
+    return out
+
+
 def pick_distinct_post_indices(history: list[dict], k: int = 5) -> list[int]:
     """Return up to k indices spanning distinct posts AND distinct timestamps,
     biased toward first/last with some middle picks."""
@@ -98,11 +141,18 @@ def render_user(uid: str, history: list[dict], title: str, blurb: str,
     return "\n".join(out)
 
 
-def pick_three_users(by_user: dict[str, list[dict]]) -> list[tuple[str, str, list[int]]]:
+def pick_three_users(
+    by_user: dict[str, list[dict]],
+    judge_map: dict[tuple[str, str], bool],
+) -> list[tuple[str, str, list[int]]]:
     """Return [(uid, role, picks)] for three diverse users.
 
     Roles: 'heavy', 'longspan', 'highdiv'. The picks list is integer indices
     into the user's chronologically-sorted history.
+
+    Divergence for *highdiv* uses only pairs where `is_qa_pair` is true when
+    judge labels exist (contrastive signal requires a real answer on the
+    preferred side).
     """
     rows = []
     for uid, hist in by_user.items():
@@ -112,14 +162,16 @@ def pick_three_users(by_user: dict[str, list[dict]]) -> list[tuple[str, str, lis
         first = hist[0]["timestamp"][:4]
         last = hist[-1]["timestamp"][:4]
         span_yrs = int(last) - int(first)
-        div = sum(1 for p in hist if not p["metadata"]["top_equals_preferred"])
+        qa_hist = [p for p in hist if _qa_survives(p, judge_map) is True]
+        score_hist = qa_hist if qa_hist else hist
+        div = sum(1 for p in score_hist if not p["metadata"]["top_equals_preferred"])
         rows.append({
             "uid": uid,
             "n": len(hist),
             "n_posts": len(posts),
             "span_yrs": span_yrs,
             "div": div,
-            "div_rate": div / len(hist),
+            "div_rate": div / len(score_hist),
         })
 
     # heavy: max n with n_posts >= 5
@@ -158,9 +210,13 @@ def main() -> None:
     ap.add_argument("--note", default=None,
                     help="optional note prepended to the header (e.g. "
                          "'PARTIAL — fetch still in progress')")
+    ap.add_argument("--judge-dir", type=Path, default=None,
+                    help="directory with llm_judge/sub-<name>.jsonl sidecars "
+                         "(default: ../data/llm_judge next to extracted/)")
     args = ap.parse_args()
 
     pairs = [json.loads(l) for l in args.pairs.read_bytes().splitlines() if l.strip()]
+    judge_map = load_judge_map(args.pairs, args.judge_dir)
     if not pairs:
         raise SystemExit(f"no pairs in {args.pairs}")
 
@@ -176,8 +232,16 @@ def main() -> None:
     users = len(by_user)
     both = sum(1 for p in pairs if p["top_comment"])
     agree = sum(1 for p in pairs if p["metadata"]["top_equals_preferred"])
+    divergent = total - agree
 
-    picks = pick_three_users(by_user)
+    judged = [p for p in pairs if _qa_survives(p, judge_map) is not None]
+    survivors = [p for p in judged if _qa_survives(p, judge_map)]
+    contrastive = [
+        p for p in survivors
+        if p["top_comment"] and not p["metadata"]["top_equals_preferred"]
+    ]
+
+    picks = pick_three_users(by_user, judge_map)
     role_blurbs = {
         "heavy": ("User A — heavy user (most interactions)",
                   "Highest interaction count in this subreddit. Read top-to-"
@@ -209,10 +273,22 @@ def main() -> None:
     out.append(f"- unique users: {users:,}")
     out.append(f"- pairs with both signals attached: {both:,} "
                f"({both*100//total}%)")
-    out.append(f"- top_comment == preferred_answer: {agree:,} "
-               f"({agree*100//total}%)")
-    out.append(f"- divergent: {total-agree:,} "
-               f"({(total-agree)*100//total}%)")
+    if survivors:
+        n_s, n_c = len(survivors), len(contrastive)
+        null_s = n_s - n_c
+        out.append(f"- pairs emitted: {total:,}")
+        out.append(f"- judged: {len(judged):,} ({len(judged)*100//total}% of emitted)")
+        out.append(f"- valid QA (`is_qa_pair` true): {n_s:,} "
+                   f"({n_s*100//len(judged) if judged else 0}% of judged, "
+                   f"{n_s*100//total}% of emitted)")
+        out.append(f"- **contrastive** (valid QA ∧ top ≠ preferred): {n_c:,} "
+                   f"({n_c*100//n_s}% of valid QA, {n_c*100//total}% of emitted)")
+        out.append(f"- agreement (valid QA ∧ top == preferred): {null_s:,} "
+                   f"({null_s*100//n_s}% of valid QA)")
+    elif judged:
+        out.append(f"- judged: {len(judged):,} of {total:,} emitted — no QA labels")
+    else:
+        out.append(f"- pairs emitted: {total:,} (no judge sidecar)")
     out.append("")
     out.append("Three users with distinct profiles are shown below. Interactions "
                "are sorted ascending by timestamp; picks are on distinct posts "

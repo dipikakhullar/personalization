@@ -65,16 +65,21 @@ ALLOWLIST: dict[str, list[str]] = {
         "rust",
         "golang",
         "MachineLearning",
+        "learnmachinelearning",
+        "programming",
         "LanguageTechnology",
         "datascience",
+        "statistics",
     ],
     "life_advice": [
         "personalfinance",
+        "povertyfinance",
         "legaladvice",
         "relationships",
         "relationship_advice",
         "careerguidance",
         "jobs",
+        "GradSchool",
     ],
     "language_learning": [
         "languagelearning",
@@ -82,6 +87,16 @@ ALLOWLIST: dict[str, list[str]] = {
         "French",
         "German",
         "LearnJapanese",
+    ],
+    # diversity_v1: deliberately far-from-our-cluster communities, picked by the
+    # subreddit cosine analysis (most-different first). Mostly discussion/news,
+    # not Q&A — extraction yield via the thanks-reply signal may be low, but the
+    # goal is topic diversity for the personalization study.
+    "diversity_v1": [
+        "soccer", "nosleep", "nfl", "nba", "formula1",
+        "hiphopheads", "CryptoCurrency", "gaming", "wallstreetbets",
+        "WritingPrompts", "StarWars", "leagueoflegends", "aww", "space",
+        "cars", "todayilearned", "television", "movies", "funny", "dogs",
     ],
 }
 

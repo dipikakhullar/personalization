@@ -28,13 +28,35 @@ Reddit has no native "accepted answer" field, so we proxy with two signals:
 
 Both signals are emitted side-by-side per `(query, answer)` pair, so each
 record captures both a personal preference (`preferred_answer`) and a
-public preference (`top_comment`). When they disagree, the gap itself
-becomes a research signal (see *Divergence* below).
+public preference (`top_comment`). The rows we use for personalization are
+**contrastive pairs**: `is_qa_pair` = true (judge says the thanked comment
+is a real answer) **and** `top_equals_preferred` = false (community top ≠
+thanked answer). Everything else is filtered out or used only as a null
+baseline check. See *Data retention funnel* below and
+[`plots/outputs/retention_funnel.png`](../../plots/outputs/retention_funnel.png).
 
 **Keep rule:** a post is included *only* if OP wrote a thanks-shaped reply
 to some comment. Posts where OP never thanked anyone are silently dropped
 at extraction time. This is the entire selection criterion — there is no
 upvote threshold, score floor, or subreddit-specific override.
+
+**Answer-quality filter (`is_qa_pair`):** after extraction, every
+`(query, preferred_answer)` pair is run through an LLM judge
+(`judge_qa_pairs.py`, GPT-4o via OpenRouter) that asks whether the
+thanked comment actually resolves the OP's question. This is the cheap
+non-answer filter — OP thanks are often polite acknowledgments of partial
+or off-topic replies, not genuine answers. The judge fires **false** on a
+large share of pairs; use only survivors for contrastive / personalization
+training.
+
+| Judge metric (757,878 judged of 1.41M pairs, Jun 2026) | Count | % |
+|---|---:|---:|
+| `is_qa_pair` = true (survive) | 459,335 | **60.6%** |
+| `is_qa_pair` = false (reject) | 298,543 | 39.4% |
+
+Survival varies by sub (among judged pairs): AskHistorians ~56%, AskDocs
+~57%, AskStatistics ~51%, askphilosophy ~65%. Roughly **40% of thanked
+comments are not real answers** under the judge's criteria.
 
 ## Where the data comes from
 
@@ -97,6 +119,12 @@ arctic-shift API → fetch_subreddit.py → ndjson dumps (RS_*, RC_*)
                             ▼
                     aggregate.py → users.shard-NNN.jsonl + subreddits.csv
                                    (group by user, sort by timestamp, shard)
+                            │
+                            ▼
+                    judge_qa_pairs.py → is_qa_pair on each pair
+                            │
+                            ▼
+                    push_to_hf.py (merged pairs + judge field)
 ```
 
 Usernames are SHA-256 hashed (with optional salt) to `anon_<16hex>` before
@@ -148,9 +176,18 @@ Each line of `extracted/pairs/sub-<name>.jsonl`:
     "thanks_reply_score": 0,
     "thanks_reply_text": "Thanks, but could you clarify further?…",
     "thanks_reply_timestamp": "2018-04-08T14:05:00+00:00"
+  },
+  "is_qa_pair": {
+    "question_answer_pair": true,
+    "explanation": "…",
+    "judge_model": "openai/gpt-4o"
   }
 }
 ```
+
+`is_qa_pair.question_answer_pair` is the survival bit. Present on HF uploads
+and in `data/llm_judge/merged_for_push/pairs/` once judged; sidecars live
+at `data/llm_judge/sub-<name>.jsonl` before merge.
 
 After aggregation, each user record is:
 
@@ -261,34 +298,79 @@ Files for the remaining 5 curated subs will appear as each finishes.
 Partial files are regenerated automatically when more data lands (just
 re-run `reddit_pipeline/auto_users_docs.sh`).
 
-## Divergence — what it is and how it's measured
+## Data retention funnel
 
-Per pair, both signals are stored:
+How much data survives each pipeline stage. Regenerate the plot with
+`python plot_retention_funnel.py` from `reddit_pipeline/`.
 
-- `preferred_answer` (the comment OP thanked) and its `answer_score`
-- `top_comment` (the highest-scored non-OP, non-bot, non-deleted comment in
-  the thread) and its `top_comment_score`
+![Retention funnel](../../plots/outputs/retention_funnel.png)
 
-A boolean `top_equals_preferred` is computed at extraction time:
+| Stage | Count | Kept (vs previous) | Kept (vs pairs emitted) |
+|---|---:|---:|---:|
+| Question-shaped posts | 5,670,576 | — | — |
+| Unique thanked comments (pre-pair) | 1,454,730 | 25.7% of posts | — |
+| **Pairs emitted** (thanks → preferred) | 1,410,273 | 97.0% of thanked comments | **100%** (baseline) |
+| LLM judged | 757,867 | **53.7%** | 53.7% |
+| Valid QA (`is_qa_pair` true) | 459,328 | **60.6%** | 32.6% |
+| **Contrastive** (valid QA ∧ top ≠ preferred) | **232,947** | **50.7%** | **16.5%** |
 
-```python
-top_equals_preferred = (top_comment_id == answer_comment_id)
-```
+**Target rows:** contrastive only — judge-valid answer, community top is a
+different comment. **232,947** rows = **16.5%** of emitted pairs (**4.1%** of
+question-shaped posts). Judge coverage is incomplete (~46% of emitted pairs
+not judged yet); contrastive count will grow as judging finishes.
 
-Across the **9,919 pairs** in this snapshot:
+Among **valid QA** (459,328 rows), contrastive is **50.7%**; the other
+49.3% are **agreement** rows (`top == preferred` on a real answer) — useful
+for null-baseline evaluation, not contrastive training.
 
-| | Count | % of pairs |
+## Per-user activity and minimum thresholds
+
+The extracted corpus has **645,073** askers and **1,410,284** emitted pairs.
+Activity is extremely sparse: **median 1 pair/user**, p90 = 4, p99 = 13
+(max 587). Regenerate with `python plot_user_activity.py` from
+`reddit_pipeline/`.
+
+| Plot | Path |
+|---|---|
+| User-trend figures (all) | [`plots/outputs/user_trends/`](../../plots/outputs/user_trends/) |
+| Distribution + ECDF | [`user_activity_distribution.png`](../../plots/outputs/user_trends/user_activity_distribution.png) |
+| Average history per user (overall + by sub) | [`user_activity_history_summary.png`](../../plots/outputs/user_trends/user_activity_history_summary.png) |
+| Themed cross-sub flow matrix | [`flow_matrix_by_theme.png`](../../plots/outputs/user_trends/flow_matrix_by_theme.png) |
+| Roam destinations (small multiples) | [`roam_destinations_small_multiples.png`](../../plots/outputs/user_trends/roam_destinations_small_multiples.png) |
+| Activity by year / cohort depth | [`user_activity_temporal_trends.png`](../../plots/outputs/user_trends/user_activity_temporal_trends.png) |
+| Threshold sensitivity | [`user_activity_threshold_sensitivity.png`](../../plots/outputs/user_trends/user_activity_threshold_sensitivity.png) |
+| Numeric curves | [`user_activity_threshold_sensitivity.json`](../../plots/outputs/user_trends/user_activity_threshold_sensitivity.json) |
+
+The sensitivity plot is one chart: as **min thanked threads per user** rises, it
+shows % of users, all pairs, and **divergent pairs** retained (judge-valid QA
+where OP’s thanked answer ≠ community top — the rows we train/evaluate on).
+
+**Why these cutoffs:**
+
+| Threshold | Use | Users kept | All pairs | Divergent pairs |
+|---|---|---:|---:|---:|
+| `min_pairs ≥ 3` | Per-user shard aggregation | 21.9% | 54.7% | see JSON |
+| `min_pairs ≥ 5` | Heavy-user qualitative traces | 8.3% | 34.1% | see JSON |
+| `min_subreddits ≥ 2` | Cross-sub only (in JSON) | 8.1% | 21.2% | — |
+
+Raising `min_pairs` beyond 5 quickly erodes coverage (e.g. ≥10 keeps 2% of users,
+16% of pairs). LOO benchmarks use **per-thread** prior count (`k`), not this
+global user filter.
+
+### Per curated sub — contrastive count (judged subs)
+
+| Subreddit | Contrastive | % of sub's valid QA |
 |---|---:|---:|
-| OP and community agree (`top == preferred`) | 4,523 | **45.6%** |
-| OP and community diverge (`top ≠ preferred`) | 5,396 | **54.4%** |
+| AskDocs | 21,978 | 34.4% |
+| AskCulinary | 17,469 | 60.5% |
+| askphilosophy | 11,456 | 46.9% |
+| AskEngineers | 14,345 | 64.7% |
+| askscience | 12,646 | 33.0% |
+| AskHistorians | 8,998 | 21.5% |
+| AskAcademia | 9,189 | 65.3% |
+| AskStatistics | 2,951 | 45.3% |
 
-That's a meaningful split — more than half the time, what the OP found
-most valuable is *not* what the broader community upvoted. This
-disagreement rate is the thing that makes the dataset interesting for
-personalization: it means the personal signal carries information that the
-community signal does not.
-
-### Divergent example #1 — joke vs. informative
+### Contrastive example #1 — joke vs. informative
 
 > **Q:** *What is this kind of graph called and how does it work?* (image of
 > a flow diagram)
@@ -306,7 +388,7 @@ genuinely engaging with what context might be missing. Two completely
 different things "got the prize" — community optimized for entertainment,
 OP optimized for help. This is a paradigmatic divergence case.
 
-### Divergent example #2 — concise vs. exhaustive
+### Contrastive example #2 — concise vs. exhaustive
 
 > **Q:** *Why is model "overfitting" bad? Shouldn't that be a good thing?*
 > — first-year undergrad asking a basic stats question.
@@ -339,13 +421,13 @@ Example (interaction 2 above, repeated):
 > **Both:** "*Poisson distribution or negative binomial distribution…*"
 > *(score = 9, OP thanked it explicitly)*
 
-For research, agreement vs. divergence makes a natural data split:
+For research:
 
-- **Agreement pairs (4,523)** — community-consensus answers, useful as a
-  general "good response" baseline.
-- **Divergence pairs (5,396)** — these carry the personal signal. Models
-  trained to predict `preferred_answer` over `top_comment` here are
-  learning the user's individual preferences, not the population mode.
+- **Train / evaluate personalization on contrastive rows only** (valid QA,
+  `top ≠ preferred`).
+- **Agreement rows** (valid QA, `top == preferred`) — check whether a
+  personalized model beats the null policy "always pick top comment"; it
+  often should not.
 
 ## Caveats and pending work
 
@@ -361,8 +443,10 @@ For research, agreement vs. divergence makes a natural data split:
   / perfect / this worked / exactly what I needed" phrasings, rejects
   negators ("no thanks", "thanks for nothing"), and requires the thanks
   token in the opening of the reply. Precision is high (manual eyeballing
-  of the smoke set found 0 false positives in 29 pairs) but a
-  model-based reranker could push it higher.
+  of the smoke set found 0 false positives in 29 pairs). Non-answer thanks
+  are handled downstream by `is_qa_pair` (~39% rejection rate).
+- **Judge coverage is partial.** ~54% of extracted pairs are judged so far;
+  the rest lack `is_qa_pair` until `judge_qa_pairs.py` catches up.
 - **`top_comment` is whole-thread.** It's the top-scored non-OP comment
   anywhere in the tree, not necessarily at top-level. For most posts the
   top comment *is* top-level, but for very deep threads this distinction
@@ -380,11 +464,15 @@ For research, agreement vs. divergence makes a natural data split:
 │   ├── fetch_subreddit.py
 │   ├── extract.py
 │   ├── aggregate.py
+│   ├── judge_qa_pairs.py     # is_qa_pair LLM judge
+│   ├── plot_retention_funnel.py
 │   ├── signals.py            # thanks-reply + question-shape regexes
 │   └── subreddits.py         # curated allowlist + bot blocklist
+├── plots/outputs/            # figures (retention_funnel.png, …)
 └── data/
     ├── REPORT.md             # ← this file
     ├── fetch.log             # live fetcher log
+    ├── llm_judge/            # judge sidecars + merged_for_push/
     ├── dumps/sub-<name>/     # raw API data, live and growing
     ├── smoke/                # frozen 300-record AskBaking probe
     └── snapshot_<ts>/        # point-in-time extracted snapshots
