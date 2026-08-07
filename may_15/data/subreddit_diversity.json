@@ -1,0 +1,719 @@
+[
+  {
+    "subreddit": "AskDocs",
+    "extracted": true,
+    "description": "asking doctors about medical symptoms and health concerns",
+    "nearest_extracted": "askscience",
+    "nearest_cos": 0.3551
+  },
+  {
+    "subreddit": "AskEngineers",
+    "extracted": true,
+    "description": "engineering questions and professional engineering advice",
+    "nearest_extracted": "askscience",
+    "nearest_cos": 0.4189
+  },
+  {
+    "subreddit": "AskHistorians",
+    "extracted": true,
+    "description": "in-depth historical questions answered by historians",
+    "nearest_extracted": "askscience",
+    "nearest_cos": 0.4144
+  },
+  {
+    "subreddit": "askscience",
+    "extracted": true,
+    "description": "rigorous science questions answered by experts",
+    "nearest_extracted": "AskEngineers",
+    "nearest_cos": 0.4189
+  },
+  {
+    "subreddit": "AskAcademia",
+    "extracted": true,
+    "description": "academic careers, grad school, and university life",
+    "nearest_extracted": "GradSchool",
+    "nearest_cos": 0.6421
+  },
+  {
+    "subreddit": "AskCulinary",
+    "extracted": true,
+    "description": "professional cooking technique questions",
+    "nearest_extracted": "Cooking",
+    "nearest_cos": 0.6033
+  },
+  {
+    "subreddit": "askphilosophy",
+    "extracted": true,
+    "description": "philosophy questions and concepts",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.3715
+  },
+  {
+    "subreddit": "AskStatistics",
+    "extracted": true,
+    "description": "statistics methodology and data questions",
+    "nearest_extracted": "statistics",
+    "nearest_cos": 0.5818
+  },
+  {
+    "subreddit": "statistics",
+    "extracted": true,
+    "description": "statistics theory and applied statistics discussion",
+    "nearest_extracted": "AskStatistics",
+    "nearest_cos": 0.5818
+  },
+  {
+    "subreddit": "datascience",
+    "extracted": true,
+    "description": "data science careers, tools, and methods",
+    "nearest_extracted": "MachineLearning",
+    "nearest_cos": 0.4031
+  },
+  {
+    "subreddit": "MachineLearning",
+    "extracted": true,
+    "description": "machine learning research and engineering",
+    "nearest_extracted": "learnmachinelearning",
+    "nearest_cos": 0.5692
+  },
+  {
+    "subreddit": "learnmachinelearning",
+    "extracted": true,
+    "description": "learning machine learning as a beginner",
+    "nearest_extracted": "MachineLearning",
+    "nearest_cos": 0.5692
+  },
+  {
+    "subreddit": "LanguageTechnology",
+    "extracted": true,
+    "description": "natural language processing and computational linguistics",
+    "nearest_extracted": "MachineLearning",
+    "nearest_cos": 0.4359
+  },
+  {
+    "subreddit": "programming",
+    "extracted": true,
+    "description": "general software programming discussion",
+    "nearest_extracted": "learnprogramming",
+    "nearest_cos": 0.5487
+  },
+  {
+    "subreddit": "learnprogramming",
+    "extracted": true,
+    "description": "learning to code as a beginner",
+    "nearest_extracted": "learnpython",
+    "nearest_cos": 0.5843
+  },
+  {
+    "subreddit": "learnpython",
+    "extracted": true,
+    "description": "learning the Python programming language",
+    "nearest_extracted": "learnprogramming",
+    "nearest_cos": 0.5843
+  },
+  {
+    "subreddit": "learnjavascript",
+    "extracted": true,
+    "description": "learning the JavaScript programming language",
+    "nearest_extracted": "learnprogramming",
+    "nearest_cos": 0.5573
+  },
+  {
+    "subreddit": "rust",
+    "extracted": true,
+    "description": "the Rust systems programming language",
+    "nearest_extracted": "golang",
+    "nearest_cos": 0.547
+  },
+  {
+    "subreddit": "golang",
+    "extracted": true,
+    "description": "the Go programming language",
+    "nearest_extracted": "rust",
+    "nearest_cos": 0.547
+  },
+  {
+    "subreddit": "Cooking",
+    "extracted": true,
+    "description": "home cooking recipes and technique",
+    "nearest_extracted": "AskCulinary",
+    "nearest_cos": 0.6033
+  },
+  {
+    "subreddit": "AskBaking",
+    "extracted": true,
+    "description": "home baking questions and troubleshooting",
+    "nearest_extracted": "AskCulinary",
+    "nearest_cos": 0.5774
+  },
+  {
+    "subreddit": "Coffee",
+    "extracted": true,
+    "description": "brewing coffee, beans, and gear",
+    "nearest_extracted": "tea",
+    "nearest_cos": 0.4691
+  },
+  {
+    "subreddit": "tea",
+    "extracted": true,
+    "description": "tea varieties, brewing, and culture",
+    "nearest_extracted": "Coffee",
+    "nearest_cos": 0.4691
+  },
+  {
+    "subreddit": "homeimprovement",
+    "extracted": true,
+    "description": "home repair and renovation projects",
+    "nearest_extracted": "DIY",
+    "nearest_cos": 0.5932
+  },
+  {
+    "subreddit": "DIY",
+    "extracted": true,
+    "description": "do-it-yourself home and craft projects",
+    "nearest_extracted": "homeimprovement",
+    "nearest_cos": 0.5932
+  },
+  {
+    "subreddit": "gardening",
+    "extracted": true,
+    "description": "growing plants and outdoor gardens",
+    "nearest_extracted": "houseplants",
+    "nearest_cos": 0.5152
+  },
+  {
+    "subreddit": "houseplants",
+    "extracted": true,
+    "description": "caring for indoor houseplants",
+    "nearest_extracted": "gardening",
+    "nearest_cos": 0.5152
+  },
+  {
+    "subreddit": "Sewing",
+    "extracted": true,
+    "description": "sewing garments and fabric projects",
+    "nearest_extracted": "woodworking",
+    "nearest_cos": 0.5664
+  },
+  {
+    "subreddit": "woodworking",
+    "extracted": true,
+    "description": "woodworking craft and furniture building",
+    "nearest_extracted": "Sewing",
+    "nearest_cos": 0.5664
+  },
+  {
+    "subreddit": "bicycling",
+    "extracted": true,
+    "description": "road and recreational cycling",
+    "nearest_extracted": "gardening",
+    "nearest_cos": 0.288
+  },
+  {
+    "subreddit": "personalfinance",
+    "extracted": true,
+    "description": "personal budgeting, saving, and money management",
+    "nearest_extracted": "povertyfinance",
+    "nearest_cos": 0.6407
+  },
+  {
+    "subreddit": "povertyfinance",
+    "extracted": true,
+    "description": "managing money on a low income",
+    "nearest_extracted": "personalfinance",
+    "nearest_cos": 0.6407
+  },
+  {
+    "subreddit": "legaladvice",
+    "extracted": true,
+    "description": "everyday legal questions and advice",
+    "nearest_extracted": "relationship_advice",
+    "nearest_cos": 0.3412
+  },
+  {
+    "subreddit": "relationships",
+    "extracted": true,
+    "description": "interpersonal relationship problems and advice",
+    "nearest_extracted": "relationship_advice",
+    "nearest_cos": 0.6567
+  },
+  {
+    "subreddit": "relationship_advice",
+    "extracted": true,
+    "description": "advice on romantic and personal relationships",
+    "nearest_extracted": "relationships",
+    "nearest_cos": 0.6567
+  },
+  {
+    "subreddit": "GradSchool",
+    "extracted": true,
+    "description": "graduate school experience and advice",
+    "nearest_extracted": "AskAcademia",
+    "nearest_cos": 0.6421
+  },
+  {
+    "subreddit": "languagelearning",
+    "extracted": true,
+    "description": "learning foreign languages",
+    "nearest_extracted": "German",
+    "nearest_cos": 0.6524
+  },
+  {
+    "subreddit": "LearnJapanese",
+    "extracted": true,
+    "description": "learning the Japanese language",
+    "nearest_extracted": "languagelearning",
+    "nearest_cos": 0.5906
+  },
+  {
+    "subreddit": "German",
+    "extracted": true,
+    "description": "learning the German language",
+    "nearest_extracted": "languagelearning",
+    "nearest_cos": 0.6524
+  },
+  {
+    "subreddit": "JapanTravel",
+    "extracted": true,
+    "description": "travel planning for Japan",
+    "nearest_extracted": "LearnJapanese",
+    "nearest_cos": 0.5064
+  },
+  {
+    "subreddit": "solotravel",
+    "extracted": true,
+    "description": "traveling alone and backpacking",
+    "nearest_extracted": "Shoestring",
+    "nearest_cos": 0.5212
+  },
+  {
+    "subreddit": "Shoestring",
+    "extracted": true,
+    "description": "budget travel on very little money",
+    "nearest_extracted": "solotravel",
+    "nearest_cos": 0.5212
+  },
+  {
+    "subreddit": "nba",
+    "extracted": false,
+    "type": "discussion",
+    "description": "professional basketball news and discussion",
+    "nearest_extracted": "askscience",
+    "nearest_cos": 0.1967,
+    "mean_cos": 0.0711
+  },
+  {
+    "subreddit": "soccer",
+    "extracted": false,
+    "type": "discussion",
+    "description": "international football/soccer news and matches",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.1922,
+    "mean_cos": 0.0838
+  },
+  {
+    "subreddit": "formula1",
+    "extracted": false,
+    "type": "discussion",
+    "description": "Formula 1 motorsport racing",
+    "nearest_extracted": "bicycling",
+    "nearest_cos": 0.2109,
+    "mean_cos": 0.0712
+  },
+  {
+    "subreddit": "nfl",
+    "extracted": false,
+    "type": "discussion",
+    "description": "American football league discussion",
+    "nearest_extracted": "AskEngineers",
+    "nearest_cos": 0.1946,
+    "mean_cos": 0.0529
+  },
+  {
+    "subreddit": "gaming",
+    "extracted": false,
+    "type": "discussion",
+    "description": "video game culture and news",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2455,
+    "mean_cos": 0.095
+  },
+  {
+    "subreddit": "leagueoflegends",
+    "extracted": false,
+    "type": "discussion",
+    "description": "the League of Legends video game",
+    "nearest_extracted": "learnjavascript",
+    "nearest_cos": 0.2646,
+    "mean_cos": 0.1463
+  },
+  {
+    "subreddit": "Minecraft",
+    "extracted": false,
+    "type": "discussion",
+    "description": "the Minecraft video game",
+    "nearest_extracted": "learnjavascript",
+    "nearest_cos": 0.3744,
+    "mean_cos": 0.167
+  },
+  {
+    "subreddit": "movies",
+    "extracted": false,
+    "type": "discussion",
+    "description": "film news, reviews, and discussion",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2954,
+    "mean_cos": 0.167
+  },
+  {
+    "subreddit": "television",
+    "extracted": false,
+    "type": "discussion",
+    "description": "TV shows and series discussion",
+    "nearest_extracted": "programming",
+    "nearest_cos": 0.2939,
+    "mean_cos": 0.1474
+  },
+  {
+    "subreddit": "anime",
+    "extracted": false,
+    "type": "discussion",
+    "description": "Japanese animation shows and discussion",
+    "nearest_extracted": "LearnJapanese",
+    "nearest_cos": 0.481,
+    "mean_cos": 0.1166
+  },
+  {
+    "subreddit": "StarWars",
+    "extracted": false,
+    "type": "discussion",
+    "description": "the Star Wars franchise",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2644,
+    "mean_cos": 0.117
+  },
+  {
+    "subreddit": "Music",
+    "extracted": false,
+    "type": "discussion",
+    "description": "general music discussion and news",
+    "nearest_extracted": "programming",
+    "nearest_cos": 0.3231,
+    "mean_cos": 0.1462
+  },
+  {
+    "subreddit": "hiphopheads",
+    "extracted": false,
+    "type": "discussion",
+    "description": "hip-hop music news and releases",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2258,
+    "mean_cos": 0.1153
+  },
+  {
+    "subreddit": "worldnews",
+    "extracted": false,
+    "type": "discussion",
+    "description": "international news and current events",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.3771,
+    "mean_cos": 0.1411
+  },
+  {
+    "subreddit": "politics",
+    "extracted": false,
+    "type": "discussion",
+    "description": "US political news and debate",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.319,
+    "mean_cos": 0.1005
+  },
+  {
+    "subreddit": "CryptoCurrency",
+    "extracted": false,
+    "type": "discussion",
+    "description": "cryptocurrency markets and blockchain",
+    "nearest_extracted": "programming",
+    "nearest_cos": 0.233,
+    "mean_cos": 0.0917
+  },
+  {
+    "subreddit": "wallstreetbets",
+    "extracted": false,
+    "type": "discussion",
+    "description": "high-risk stock and options trading memes",
+    "nearest_extracted": "learnmachinelearning",
+    "nearest_cos": 0.2519,
+    "mean_cos": 0.1143
+  },
+  {
+    "subreddit": "stocks",
+    "extracted": false,
+    "type": "discussion",
+    "description": "stock market investing discussion",
+    "nearest_extracted": "personalfinance",
+    "nearest_cos": 0.3099,
+    "mean_cos": 0.165
+  },
+  {
+    "subreddit": "cars",
+    "extracted": false,
+    "type": "discussion",
+    "description": "automobiles, car culture and news",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2843,
+    "mean_cos": 0.1139
+  },
+  {
+    "subreddit": "motorcycles",
+    "extracted": false,
+    "type": "discussion",
+    "description": "motorcycles, riding and gear",
+    "nearest_extracted": "bicycling",
+    "nearest_cos": 0.5781,
+    "mean_cos": 0.1072
+  },
+  {
+    "subreddit": "aww",
+    "extracted": false,
+    "type": "discussion",
+    "description": "cute animal pictures and videos",
+    "nearest_extracted": "DIY",
+    "nearest_cos": 0.2695,
+    "mean_cos": 0.1186
+  },
+  {
+    "subreddit": "dogs",
+    "extracted": false,
+    "type": "discussion",
+    "description": "dog ownership and care",
+    "nearest_extracted": "legaladvice",
+    "nearest_cos": 0.3015,
+    "mean_cos": 0.1546
+  },
+  {
+    "subreddit": "malefashionadvice",
+    "extracted": false,
+    "type": "discussion",
+    "description": "men's fashion and style advice",
+    "nearest_extracted": "relationship_advice",
+    "nearest_cos": 0.3646,
+    "mean_cos": 0.1414
+  },
+  {
+    "subreddit": "MakeupAddiction",
+    "extracted": false,
+    "type": "discussion",
+    "description": "makeup looks and product discussion",
+    "nearest_extracted": "relationship_advice",
+    "nearest_cos": 0.3015,
+    "mean_cos": 0.1319
+  },
+  {
+    "subreddit": "hiking",
+    "extracted": false,
+    "type": "discussion",
+    "description": "hiking trails and backpacking outdoors",
+    "nearest_extracted": "solotravel",
+    "nearest_cos": 0.5825,
+    "mean_cos": 0.1518
+  },
+  {
+    "subreddit": "space",
+    "extracted": false,
+    "type": "discussion",
+    "description": "astronomy, spaceflight and the cosmos",
+    "nearest_extracted": "askscience",
+    "nearest_cos": 0.2784,
+    "mean_cos": 0.1216
+  },
+  {
+    "subreddit": "funny",
+    "extracted": false,
+    "type": "discussion",
+    "description": "humorous images and jokes",
+    "nearest_extracted": "LearnJapanese",
+    "nearest_cos": 0.298,
+    "mean_cos": 0.139
+  },
+  {
+    "subreddit": "nosleep",
+    "extracted": false,
+    "type": "discussion",
+    "description": "original horror fiction short stories",
+    "nearest_extracted": "German",
+    "nearest_cos": 0.1937,
+    "mean_cos": 0.1006
+  },
+  {
+    "subreddit": "WritingPrompts",
+    "extracted": false,
+    "type": "discussion",
+    "description": "creative writing prompts and short fiction",
+    "nearest_extracted": "AskAcademia",
+    "nearest_cos": 0.2575,
+    "mean_cos": 0.1461
+  },
+  {
+    "subreddit": "Parenting",
+    "extracted": false,
+    "type": "discussion",
+    "description": "raising children and parenting advice",
+    "nearest_extracted": "relationships",
+    "nearest_cos": 0.4532,
+    "mean_cos": 0.1606
+  },
+  {
+    "subreddit": "conspiracy",
+    "extracted": false,
+    "type": "discussion",
+    "description": "conspiracy theories and alternative narratives",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.3434,
+    "mean_cos": 0.0997
+  },
+  {
+    "subreddit": "todayilearned",
+    "extracted": false,
+    "type": "discussion",
+    "description": "interesting trivia facts people just learned",
+    "nearest_extracted": "AskHistorians",
+    "nearest_cos": 0.2927,
+    "mean_cos": 0.1137
+  },
+  {
+    "subreddit": "MechanicAdvice",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "car repair and automotive troubleshooting advice",
+    "nearest_extracted": "AskEngineers",
+    "nearest_cos": 0.4797,
+    "mean_cos": 0.1645
+  },
+  {
+    "subreddit": "AskVet",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "veterinary and pet health questions",
+    "nearest_extracted": "AskDocs",
+    "nearest_cos": 0.4822,
+    "mean_cos": 0.1403
+  },
+  {
+    "subreddit": "DogTraining",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "dog behavior and training advice",
+    "nearest_extracted": "relationships",
+    "nearest_cos": 0.2527,
+    "mean_cos": 0.1068
+  },
+  {
+    "subreddit": "SkincareAddiction",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "skincare routines and skin problem advice",
+    "nearest_extracted": "relationship_advice",
+    "nearest_cos": 0.4169,
+    "mean_cos": 0.1639
+  },
+  {
+    "subreddit": "AskElectronics",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "electronics circuits and components help",
+    "nearest_extracted": "AskEngineers",
+    "nearest_cos": 0.316,
+    "mean_cos": 0.1229
+  },
+  {
+    "subreddit": "photography",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "camera gear and photography technique advice",
+    "nearest_extracted": "Cooking",
+    "nearest_cos": 0.32,
+    "mean_cos": 0.1581
+  },
+  {
+    "subreddit": "Fitness",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "exercise, training programs and fitness advice",
+    "nearest_extracted": "bicycling",
+    "nearest_cos": 0.2925,
+    "mean_cos": 0.1229
+  },
+  {
+    "subreddit": "nutrition",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "diet, food science and nutrition questions",
+    "nearest_extracted": "AskCulinary",
+    "nearest_cos": 0.4187,
+    "mean_cos": 0.154
+  },
+  {
+    "subreddit": "investing",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "long-term investing strategy questions",
+    "nearest_extracted": "personalfinance",
+    "nearest_cos": 0.3176,
+    "mean_cos": 0.1736
+  },
+  {
+    "subreddit": "Bonsai",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "growing and caring for bonsai trees",
+    "nearest_extracted": "houseplants",
+    "nearest_cos": 0.46,
+    "mean_cos": 0.174
+  },
+  {
+    "subreddit": "Guitar",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "learning guitar and gear advice",
+    "nearest_extracted": "Coffee",
+    "nearest_cos": 0.2788,
+    "mean_cos": 0.1094
+  },
+  {
+    "subreddit": "AskCarSales",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "buying and selling cars advice",
+    "nearest_extracted": "AskEngineers",
+    "nearest_cos": 0.2841,
+    "mean_cos": 0.1383
+  },
+  {
+    "subreddit": "Plumbing",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "home plumbing repair advice",
+    "nearest_extracted": "homeimprovement",
+    "nearest_cos": 0.3694,
+    "mean_cos": 0.0982
+  },
+  {
+    "subreddit": "knitting",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "knitting patterns and technique help",
+    "nearest_extracted": "Sewing",
+    "nearest_cos": 0.5128,
+    "mean_cos": 0.1253
+  },
+  {
+    "subreddit": "BeginnerWoodWorking",
+    "extracted": false,
+    "type": "qa_advice",
+    "description": "beginner woodworking project help",
+    "nearest_extracted": "woodworking",
+    "nearest_cos": 0.6616,
+    "mean_cos": 0.1315
+  }
+]
